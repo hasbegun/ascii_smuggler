@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 
 class ActionButtons extends StatelessWidget {
   final VoidCallback onEncode;
@@ -14,13 +15,14 @@ class ActionButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Row(
       children: [
         Expanded(
           child: ElevatedButton.icon(
             onPressed: onEncode,
             icon: const Icon(Icons.lock),
-            label: const Text('Encode & Copy'),
+            label: Text(l10n.encodeAndCopy),
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.all(16),
             ),
@@ -31,7 +33,7 @@ class ActionButtons extends StatelessWidget {
           child: ElevatedButton.icon(
             onPressed: onDecode,
             icon: const Icon(Icons.lock_open),
-            label: const Text('Decode'),
+            label: Text(l10n.decode),
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.all(16),
             ),
@@ -42,7 +44,7 @@ class ActionButtons extends StatelessWidget {
           child: OutlinedButton.icon(
             onPressed: onClear,
             icon: const Icon(Icons.clear),
-            label: const Text('Clear'),
+            label: Text(l10n.clear),
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.all(16),
             ),

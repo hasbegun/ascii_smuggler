@@ -1,45 +1,44 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 
 class InfoDialog {
   static void show(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('About ASCII Smuggler'),
-        content: const SingleChildScrollView(
+        title: Text(l10n.aboutAsciiSmuggler),
+        content: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
+              Text(l10n.aboutDescription),
+              const SizedBox(height: 16),
               Text(
-                'ASCII Smuggler converts text to invisible Unicode encodings '
-                'and decodes hidden secrets.',
+                l10n.encodingMethods,
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 8),
+              Text(l10n.unicodeTagsDescription),
+              Text(l10n.variantSelectorsDescription),
+              Text(l10n.sneakyBitsDescription),
+              const SizedBox(height: 16),
               Text(
-                'Encoding Methods:',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                l10n.useCases,
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 8),
-              Text('• Unicode Tags: Uses invisible tag characters (U+E0000 block)'),
-              Text('• Variant Selectors: Adds variant selector characters'),
-              Text('• Sneaky Bits: Binary encoding with zero-width characters'),
-              SizedBox(height: 16),
-              Text(
-                'Use Cases:',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 8),
-              Text('• Security research'),
-              Text('• Steganography demonstrations'),
-              Text('• Understanding Unicode encoding'),
+              const SizedBox(height: 8),
+              Text(l10n.useCaseSecurityResearch),
+              Text(l10n.useCaseSteganography),
+              Text(l10n.useCaseUnicodeEncoding),
             ],
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
+            child: Text(l10n.close),
           ),
         ],
       ),

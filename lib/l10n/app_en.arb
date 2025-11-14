@@ -1,0 +1,313 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "ASCII Smuggler",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+
+  "appDescription": "Convert text to invisible Unicode encodings and decode hidden secrets",
+  "@appDescription": {
+    "description": "Main description of the app"
+  },
+
+  "inputLabel": "Input Text",
+  "@inputLabel": {
+    "description": "Label for input text field"
+  },
+
+  "inputHint": "Enter text to encode or decode...",
+  "@inputHint": {
+    "description": "Hint text for input field"
+  },
+
+  "encodeAndCopy": "Encode & Copy",
+  "@encodeAndCopy": {
+    "description": "Button text for encoding and copying"
+  },
+
+  "decode": "Decode",
+  "@decode": {
+    "description": "Button text for decoding"
+  },
+
+  "clear": "Clear",
+  "@clear": {
+    "description": "Button text for clearing inputs"
+  },
+
+  "hideAdvancedOptions": "Hide Advanced Options",
+  "@hideAdvancedOptions": {
+    "description": "Button text to hide advanced options"
+  },
+
+  "toggleAdvancedOptions": "Toggle Advanced Options",
+  "@toggleAdvancedOptions": {
+    "description": "Button text to show advanced options"
+  },
+
+  "output": "Output",
+  "@output": {
+    "description": "Label for output field"
+  },
+
+  "containsInvisibleCharsHelper": "Contains {count} invisible characters - Click Copy to use",
+  "@containsInvisibleCharsHelper": {
+    "description": "Helper text showing invisible character count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "invisibleCharsDebugPlaceholder": "[{count} invisible characters - see Debug Output below]",
+  "@invisibleCharsDebugPlaceholder": {
+    "description": "Placeholder text for invisible characters",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "encodingOptions": "Encoding Options",
+  "@encodingOptions": {
+    "description": "Section title for encoding options"
+  },
+
+  "decodingOptions": "Decoding Options",
+  "@decodingOptions": {
+    "description": "Section title for decoding options"
+  },
+
+  "unicodeTags": "Unicode Tags",
+  "@unicodeTags": {
+    "description": "Unicode Tags encoding method"
+  },
+
+  "variantSelectors": "Variant Selectors",
+  "@variantSelectors": {
+    "description": "Variant Selectors encoding method"
+  },
+
+  "sneakyBitsUtf8": "Sneaky Bits (UTF-8)",
+  "@sneakyBitsUtf8": {
+    "description": "Sneaky Bits encoding method"
+  },
+
+  "addBeginEndTags": "Add BEGIN/END Tags",
+  "@addBeginEndTags": {
+    "description": "Checkbox option to add begin/end tags"
+  },
+
+  "decodeUrl": "Decode URL",
+  "@decodeUrl": {
+    "description": "Decode URL option"
+  },
+
+  "highlightMode": "Highlight Mode",
+  "@highlightMode": {
+    "description": "Highlight mode option"
+  },
+
+  "autoDecode": "Auto-decode",
+  "@autoDecode": {
+    "description": "Auto-decode option"
+  },
+
+  "showDebug": "Show Debug",
+  "@showDebug": {
+    "description": "Show debug option"
+  },
+
+  "otherInvisible": "Other Invisible",
+  "@otherInvisible": {
+    "description": "Other invisible characters option"
+  },
+
+  "sneakyBits": "Sneaky Bits",
+  "@sneakyBits": {
+    "description": "Sneaky bits detection option"
+  },
+
+  "inputOptions": "Input Options",
+  "@inputOptions": {
+    "description": "Section title for input options"
+  },
+
+  "inputOptionsDescription": "Click a button to copy the character to clipboard.",
+  "@inputOptionsDescription": {
+    "description": "Description for input options section"
+  },
+
+  "statistics": "Statistics",
+  "@statistics": {
+    "description": "Statistics section title"
+  },
+
+  "total": "Total",
+  "@total": {
+    "description": "Total count label"
+  },
+
+  "visible": "Visible",
+  "@visible": {
+    "description": "Visible characters label"
+  },
+
+  "invisible": "Invisible",
+  "@invisible": {
+    "description": "Invisible characters label"
+  },
+
+  "tags": "Tags",
+  "@tags": {
+    "description": "Tags count label"
+  },
+
+  "zeroWidth": "Zero Width",
+  "@zeroWidth": {
+    "description": "Zero width characters label"
+  },
+
+  "debugOutput": "Debug Output",
+  "@debugOutput": {
+    "description": "Debug output section title"
+  },
+
+  "unicode": "Unicode",
+  "@unicode": {
+    "description": "Unicode format option"
+  },
+
+  "hexadecimal": "Hexadecimal",
+  "@hexadecimal": {
+    "description": "Hexadecimal format option"
+  },
+
+  "binary": "Binary",
+  "@binary": {
+    "description": "Binary format option"
+  },
+
+  "debugHint": "Character codes will appear here...",
+  "@debugHint": {
+    "description": "Hint text for debug output"
+  },
+
+  "aboutAsciiSmuggler": "About ASCII Smuggler",
+  "@aboutAsciiSmuggler": {
+    "description": "About dialog title"
+  },
+
+  "aboutDescription": "ASCII Smuggler converts text to invisible Unicode encodings and decodes hidden secrets.",
+  "@aboutDescription": {
+    "description": "About dialog description"
+  },
+
+  "encodingMethods": "Encoding Methods:",
+  "@encodingMethods": {
+    "description": "Encoding methods section in about dialog"
+  },
+
+  "unicodeTagsDescription": "• Unicode Tags: Uses invisible tag characters (U+E0000 block)",
+  "@unicodeTagsDescription": {
+    "description": "Unicode tags method description"
+  },
+
+  "variantSelectorsDescription": "• Variant Selectors: Adds variant selector characters",
+  "@variantSelectorsDescription": {
+    "description": "Variant selectors method description"
+  },
+
+  "sneakyBitsDescription": "• Sneaky Bits: Binary encoding with zero-width characters",
+  "@sneakyBitsDescription": {
+    "description": "Sneaky bits method description"
+  },
+
+  "useCases": "Use Cases:",
+  "@useCases": {
+    "description": "Use cases section in about dialog"
+  },
+
+  "useCaseSecurityResearch": "• Security research",
+  "@useCaseSecurityResearch": {
+    "description": "Security research use case"
+  },
+
+  "useCaseSteganography": "• Steganography demonstrations",
+  "@useCaseSteganography": {
+    "description": "Steganography use case"
+  },
+
+  "useCaseUnicodeEncoding": "• Understanding Unicode encoding",
+  "@useCaseUnicodeEncoding": {
+    "description": "Unicode encoding use case"
+  },
+
+  "close": "Close",
+  "@close": {
+    "description": "Close button text"
+  },
+
+  "about": "About",
+  "@about": {
+    "description": "About tooltip"
+  },
+
+  "pleaseEnterTextToEncode": "Please enter text to encode",
+  "@pleaseEnterTextToEncode": {
+    "description": "Status message when input is empty for encoding"
+  },
+
+  "pleaseEnterTextToDecode": "Please enter text to decode",
+  "@pleaseEnterTextToDecode": {
+    "description": "Status message when input is empty for decoding"
+  },
+
+  "textCopiedToClipboard": "Text copied to clipboard!",
+  "@textCopiedToClipboard": {
+    "description": "Status message when text is copied"
+  },
+
+  "noHiddenTextDetected": "No hidden text detected",
+  "@noHiddenTextDetected": {
+    "description": "Status message when no hidden text found"
+  },
+
+  "noHiddenTextFound": "No hidden text found",
+  "@noHiddenTextFound": {
+    "description": "Output message when no hidden text found"
+  },
+
+  "detectedHiddenText": "Detected hidden text:\\n",
+  "@detectedHiddenText": {
+    "description": "Output header for detected hidden text"
+  },
+
+  "decodedMessages": "Decoded {count} hidden message(s)",
+  "@decodedMessages": {
+    "description": "Status message showing decoded message count",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+
+  "cleared": "Cleared",
+  "@cleared": {
+    "description": "Status message when fields are cleared"
+  },
+
+  "copiedToClipboard": "Copied {label} to clipboard",
+  "@copiedToClipboard": {
+    "description": "Status message when character is copied",
+    "placeholders": {
+      "label": {
+        "type": "String"
+      }
+    }
+  }
+}

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 
 enum EncodingMode {
   unicodeTags,
@@ -59,6 +60,7 @@ class AdvancedOptionsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       decoration: BoxDecoration(
         color: Colors.blueGrey,
@@ -71,7 +73,7 @@ class AdvancedOptionsSection extends StatelessWidget {
           // Encoding Options
           Center(
             child: Text(
-              'Encoding Options',
+              l10n.encodingOptions,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: Colors.white60,
@@ -82,17 +84,17 @@ class AdvancedOptionsSection extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildRadioOption('Unicode Tags', EncodingMode.unicodeTags),
+              _buildRadioOption(l10n.unicodeTags, EncodingMode.unicodeTags),
               const SizedBox(width: 16),
-              _buildRadioOption('Variant Selectors', EncodingMode.variantSelectors),
+              _buildRadioOption(l10n.variantSelectors, EncodingMode.variantSelectors),
               const SizedBox(width: 16),
-              _buildRadioOption('Sneaky Bits (UTF-8)', EncodingMode.sneakyBits),
+              _buildRadioOption(l10n.sneakyBitsUtf8, EncodingMode.sneakyBits),
             ],
           ),
           const SizedBox(height: 8),
           Center(
             child: CheckboxListTile(
-              title: const Text('Add BEGIN/END Tags', style: TextStyle(color: Colors.white60)),
+              title: Text(l10n.addBeginEndTags, style: const TextStyle(color: Colors.white60)),
               value: addBeginEndTags,
               onChanged: (value) => onAddBeginEndTagsChanged(value!),
               dense: true,
@@ -104,7 +106,7 @@ class AdvancedOptionsSection extends StatelessWidget {
           // Decoding Options
           Center(
             child: Text(
-              'Decoding Options',
+              l10n.decodingOptions,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: Colors.white60,
@@ -117,10 +119,10 @@ class AdvancedOptionsSection extends StatelessWidget {
             spacing: 8,
             runSpacing: 8,
             children: [
-              _buildCheckboxOption('Decode URL', decodeURL, onDecodeURLChanged),
-              _buildCheckboxOption('Highlight Mode', highlightMode, onHighlightModeChanged),
-              _buildCheckboxOption('Auto-decode', autoDecodeEnabled, onAutoDecodeChanged),
-              _buildCheckboxOption('Show Debug', showDebugEnabled, onShowDebugChanged),
+              _buildCheckboxOption(l10n.decodeUrl, decodeURL, onDecodeURLChanged),
+              _buildCheckboxOption(l10n.highlightMode, highlightMode, onHighlightModeChanged),
+              _buildCheckboxOption(l10n.autoDecode, autoDecodeEnabled, onAutoDecodeChanged),
+              _buildCheckboxOption(l10n.showDebug, showDebugEnabled, onShowDebugChanged),
             ],
           ),
           const SizedBox(height: 12),
@@ -129,10 +131,10 @@ class AdvancedOptionsSection extends StatelessWidget {
             spacing: 8,
             runSpacing: 8,
             children: [
-              _buildCheckboxOption('Unicode Tags', detectUnicodeTags, onDetectUnicodeTagsChanged),
-              _buildCheckboxOption('Variant Selectors', detectVariantSelectors, onDetectVariantSelectorsChanged),
-              _buildCheckboxOption('Other Invisible', detectOtherInvisible, onDetectOtherInvisibleChanged),
-              _buildCheckboxOption('Sneaky Bits', detectSneakyBits, onDetectSneakyBitsChanged),
+              _buildCheckboxOption(l10n.unicodeTags, detectUnicodeTags, onDetectUnicodeTagsChanged),
+              _buildCheckboxOption(l10n.variantSelectors, detectVariantSelectors, onDetectVariantSelectorsChanged),
+              _buildCheckboxOption(l10n.otherInvisible, detectOtherInvisible, onDetectOtherInvisibleChanged),
+              _buildCheckboxOption(l10n.sneakyBits, detectSneakyBits, onDetectSneakyBitsChanged),
             ],
           ),
         ],

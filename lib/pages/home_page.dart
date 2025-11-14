@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../l10n/app_localizations.dart';
 import '../services/ascii_smuggler_service.dart';
 import '../widgets/action_buttons.dart';
 import '../widgets/advanced_options_section.dart';
@@ -59,9 +60,10 @@ class _AsciiSmugglerHomePageState extends State<AsciiSmugglerHomePage> {
   }
 
   void _encode() {
+    final l10n = AppLocalizations.of(context)!;
     String input = _inputController.text;
     if (input.isEmpty) {
-      _setStatus('Please enter text to encode');
+      _setStatus(l10n.pleaseEnterTextToEncode);
       return;
     }
 
@@ -101,13 +103,14 @@ class _AsciiSmugglerHomePageState extends State<AsciiSmugglerHomePage> {
     // Copy ONLY the invisible encoded text to clipboard
     // This is the steganographic payload that should be invisible when pasted
     Clipboard.setData(ClipboardData(text: encoded));
-    _setStatus('Text copied to clipboard!');
+    _setStatus(l10n.textCopiedToClipboard);
   }
 
   void _decode() {
+    final l10n = AppLocalizations.of(context)!;
     String input = _inputController.text;
     if (input.isEmpty) {
-      _setStatus('Please enter text to decode');
+      _setStatus(l10n.pleaseEnterTextToDecode);
       return;
     }
 
@@ -122,34 +125,34 @@ class _AsciiSmugglerHomePageState extends State<AsciiSmugglerHomePage> {
     if (_detectUnicodeTags) {
       String decoded = _service.decodeUnicodeTags(input);
       if (decoded.isNotEmpty) {
-        results['Unicode Tags'] = decoded;
+        results[l10n.unicodeTags] = decoded;
       }
     }
 
     if (_detectVariantSelectors) {
       String decoded = _service.decodeVariantSelectors(input);
       if (decoded != input && decoded.isNotEmpty) {
-        results['Variant Selectors'] = decoded;
+        results[l10n.variantSelectors] = decoded;
       }
     }
 
     if (_detectSneakyBits) {
       String decoded = _service.decodeSneakyBits(input);
       if (decoded.isNotEmpty) {
-        results['Sneaky Bits'] = decoded;
+        results[l10n.sneakyBits] = decoded;
       }
     }
 
     if (results.isEmpty) {
-      _setStatus('No hidden text detected');
+      _setStatus(l10n.noHiddenTextDetected);
       setState(() {
-        _outputController.text = 'No hidden text found';
+        _outputController.text = l10n.noHiddenTextFound;
       });
       return;
     }
 
     StringBuffer output = StringBuffer();
-    output.writeln('Detected hidden text:\n');
+    output.writeln(l10n.detectedHiddenText);
 
     results.forEach((method, decoded) {
       output.writeln('[$method]');
@@ -161,17 +164,18 @@ class _AsciiSmugglerHomePageState extends State<AsciiSmugglerHomePage> {
       _outputController.text = output.toString();
       _updateDebugOutput(input);
       _updateStatistics(input);
-      _setStatus('Decoded ${results.length} hidden message(s)');
+      _setStatus(l10n.decodedMessages(results.length));
     });
   }
 
   void _clear() {
+    final l10n = AppLocalizations.of(context)!;
     setState(() {
       _inputController.clear();
       _outputController.clear();
       _debugController.clear();
       _statistics = {};
-      _setStatus('Cleared');
+      _setStatus(l10n.cleared);
     });
   }
 
@@ -201,15 +205,16 @@ class _AsciiSmugglerHomePageState extends State<AsciiSmugglerHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ASCII Smuggler'),
+        title: Text(l10n.appTitle),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         actions: [
           IconButton(
             icon: const Icon(Icons.info_outline),
             onPressed: () => InfoDialog.show(context),
-            tooltip: 'About',
+            tooltip: l10n.about,
           ),
         ],
       ),
@@ -223,7 +228,7 @@ class _AsciiSmugglerHomePageState extends State<AsciiSmugglerHomePage> {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  'Convert text to invisible Unicode encodings and decode hidden secrets',
+                  l10n.appDescription,
                   style: Theme.of(context).textTheme.titleMedium,
                   textAlign: TextAlign.center,
                 ),
@@ -234,10 +239,10 @@ class _AsciiSmugglerHomePageState extends State<AsciiSmugglerHomePage> {
             // Input area
             TextField(
               controller: _inputController,
-              decoration: const InputDecoration(
-                labelText: 'Input Text',
-                hintText: 'Enter text to encode or decode...',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: l10n.inputLabel,
+                hintText: l10n.inputHint,
+                border: const OutlineInputBorder(),
               ),
               maxLines: 5,
               onChanged: (text) {
@@ -261,7 +266,7 @@ class _AsciiSmugglerHomePageState extends State<AsciiSmugglerHomePage> {
             Center(
               child: TextButton(
                 onPressed: () => setState(() => _showAdvancedOptions = !_showAdvancedOptions),
-                child: Text(_showAdvancedOptions ? 'Hide Advanced Options' : 'Toggle Advanced Options'),
+                child: Text(_showAdvancedOptions ? l10n.hideAdvancedOptions : l10n.toggleAdvancedOptions),
               ),
             ),
             const SizedBox(height: 8),
@@ -324,10 +329,10 @@ class _AsciiSmugglerHomePageState extends State<AsciiSmugglerHomePage> {
                 TextField(
                   controller: _outputController,
                   decoration: InputDecoration(
-                    labelText: 'Output',
+                    labelText: l10n.output,
                     border: const OutlineInputBorder(),
                     helperText: _outputController.text.isNotEmpty && _statistics['invisible'] != null && _statistics['invisible']! > 0
-                        ? 'Contains ${_statistics['invisible']} invisible characters - Click Copy to use'
+                        ? l10n.containsInvisibleCharsHelper(_statistics['invisible']!)
                         : null,
                     helperMaxLines: 2,
                     filled: _outputController.text.isNotEmpty,
@@ -349,7 +354,7 @@ class _AsciiSmugglerHomePageState extends State<AsciiSmugglerHomePage> {
                     left: 12,
                     top: 12,
                     child: Text(
-                      '[${_statistics['invisible']} invisible characters - see Debug Output below]',
+                      l10n.invisibleCharsDebugPlaceholder(_statistics['invisible']!),
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
                         fontStyle: FontStyle.italic,

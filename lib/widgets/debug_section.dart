@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 
 class DebugSection extends StatelessWidget {
   final TextEditingController debugController;
@@ -14,6 +15,7 @@ class DebugSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -23,16 +25,16 @@ class DebugSection extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  'Debug Output',
+                  l10n.debugOutput,
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const Spacer(),
                 DropdownButton<String>(
                   value: debugFormat,
-                  items: const [
-                    DropdownMenuItem(value: 'unicode', child: Text('Unicode')),
-                    DropdownMenuItem(value: 'hex', child: Text('Hexadecimal')),
-                    DropdownMenuItem(value: 'binary', child: Text('Binary')),
+                  items: [
+                    DropdownMenuItem(value: 'unicode', child: Text(l10n.unicode)),
+                    DropdownMenuItem(value: 'hex', child: Text(l10n.hexadecimal)),
+                    DropdownMenuItem(value: 'binary', child: Text(l10n.binary)),
                   ],
                   onChanged: (value) {
                     if (value != null) {
@@ -45,9 +47,9 @@ class DebugSection extends StatelessWidget {
             const SizedBox(height: 8),
             TextField(
               controller: debugController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Character codes will appear here...',
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                hintText: l10n.debugHint,
               ),
               maxLines: 8,
               readOnly: true,

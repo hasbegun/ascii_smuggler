@@ -4,7 +4,7 @@ This is an AI Security Tool to inject hidden prompts.
 
 A Flutter application that converts text to invisible Unicode encodings and decodes hidden secrets. Learn more from the [AWS Security blog](https://aws.amazon.com/blogs/security/defending-llm-applications-against-unicode-character-smuggling/) and [Garak ASCII Smuggler](https://reference.garak.ai/en/latest/ascii_smuggling.html).
 
-> 📖 **New to ASCII Smuggling?** Check out the [Quick Start Example](#quick-start-example) to see it in action with Google Gemini!
+"ASCII smuggling is a technique that abuses the fact that LLM tokenizers will handle non-printable or zero-width characters like unicode tags and variant selectors. This makes it useful for bypassing LLM guardrails, which often are not trained on these evasions, and for circumventing human-in-the-loop controls, as the characters will not be visible on the screen when viewed by users. Some LLMs will happily decode the relevant text and handle it gracefully." -- Garak (ascii_sumggling.html)
 
 ## Features
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
 
 class StatisticsSection extends StatelessWidget {
   final Map<String, int> statistics;
@@ -10,6 +11,7 @@ class StatisticsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -17,7 +19,7 @@ class StatisticsSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Statistics',
+              l10n.statistics,
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 8),
@@ -25,12 +27,12 @@ class StatisticsSection extends StatelessWidget {
               spacing: 16,
               runSpacing: 8,
               children: [
-                _buildStatChip(context, 'Total', statistics['total'] ?? 0),
-                _buildStatChip(context, 'Visible', statistics['visible'] ?? 0),
-                _buildStatChip(context, 'Invisible', statistics['invisible'] ?? 0),
-                _buildStatChip(context, 'Tags', statistics['tags'] ?? 0),
-                _buildStatChip(context, 'Variant Selectors', statistics['variantSelectors'] ?? 0),
-                _buildStatChip(context, 'Zero Width', statistics['zeroWidth'] ?? 0),
+                _buildStatChip(context, l10n.total, statistics['total'] ?? 0),
+                _buildStatChip(context, l10n.visible, statistics['visible'] ?? 0),
+                _buildStatChip(context, l10n.invisible, statistics['invisible'] ?? 0),
+                _buildStatChip(context, l10n.tags, statistics['tags'] ?? 0),
+                _buildStatChip(context, l10n.variantSelectors, statistics['variantSelectors'] ?? 0),
+                _buildStatChip(context, l10n.zeroWidth, statistics['zeroWidth'] ?? 0),
               ],
             ),
           ],
