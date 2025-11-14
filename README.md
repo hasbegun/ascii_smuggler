@@ -1,6 +1,10 @@
 # ASCII Smuggler
 
-A Flutter application that converts text to invisible Unicode encodings and decodes hidden secrets. This is a clone of the [ASCII Smuggler demo website](https://embracethered.com/blog/ascii-smuggler.html).
+This is an AI Security Tool to inject hidden prompts.
+
+A Flutter application that converts text to invisible Unicode encodings and decodes hidden secrets. Learn more from the [AWS Security blog](https://aws.amazon.com/blogs/security/defending-llm-applications-against-unicode-character-smuggling/) and [Garak ASCII Smuggler](https://reference.garak.ai/en/latest/ascii_smuggling.html).
+
+> 📖 **New to ASCII Smuggling?** Check out the [Quick Start Example](#quick-start-example) to see it in action with Google Gemini!
 
 ## Features
 
@@ -54,13 +58,14 @@ The app includes comprehensive advanced options matching the original website:
 
 ### Key Features
 
-- **Encode & Decode**: Convert between visible and hidden text
-- **Copy to Clipboard**: Easy copying of encoded/decoded results
+- **Encode & Copy**: Convert text to invisible encodings and automatically copy to clipboard
+- **Decode**: Automatically detect and decode all encoding methods
 - **Statistics**: View character counts and types (total, visible, invisible, tags, variant selectors, zero-width)
 - **Debug Output**: View character codes in Unicode, Hex, or Binary format
 - **Toggle Advanced Options**: Clean interface with expandable advanced options
-- **Auto-Detection**: Automatically detects and decodes all encoding methods
+- **Quick Insert Buttons**: Copy special Unicode characters with one click
 - **Matches Original Website**: Produces identical output to the original ASCII Smuggler demo
+- **Clean UI**: Streamlined interface with intuitive controls
 
 ## Getting Started
 
@@ -101,6 +106,48 @@ flutter run -d android
 # Run on macOS
 flutter run -d macos
 ```
+
+## Quick Start Example
+
+Here's a practical demonstration of how to use ASCII Smuggler to inject hidden prompts into AI models:
+
+### Step 1: Encode Your Hidden Prompt
+
+1. Open the ASCII Smuggler app
+2. Enter your hidden question in the input field: `what does cnn do?`
+3. Click **"Encode & Copy"** button
+4. The invisible encoded text is now copied to your clipboard
+
+![Screenshot 1 - Encoding the hidden prompt](screenshots/screenshot1.png)
+
+### Step 2: Use with AI Model (Gemini Example)
+
+1. Go to [Google Gemini](https://gemini.google.com)
+2. Type a visible question: `show what fibonacci in 2 sentences.`
+3. After typing, press **CMD+V (Mac)** or **CTRL+V (Windows)** to paste the invisible encoded text
+4. Press Enter to send
+
+**What you see in the prompt:**
+```
+show what fibonacci in 2 sentences.
+```
+
+**What the AI actually receives:**
+```
+show what fibonacci in 2 sentences. [invisible: what does cnn do?]
+```
+
+### Step 3: Observe the Result
+
+The AI will respond to **both** the visible question (Fibonacci) AND the hidden question (CNN), even though the hidden text is completely invisible in the chat interface!
+
+![Answer - AI responds to both prompts](screenshots/answer.png)
+
+**Key Points:**
+- ✅ The hidden text is **completely invisible** to humans
+- ✅ AI models can **read and process** the hidden instructions
+- ✅ This demonstrates **prompt injection** via Unicode steganography
+- ⚠️ Use responsibly for security research and educational purposes only
 
 ## Usage
 
@@ -149,16 +196,39 @@ flutter analyze
 
 ## Project Structure
 
+The project follows a clean, modular architecture with clear separation of concerns:
+
 ```
 ascii_smuggler/
 ├── lib/
-│   ├── main.dart                      # Main app UI
-│   └── services/
-│       └── ascii_smuggler_service.dart # Encoding/decoding logic
+│   ├── main.dart                           # App entry point (32 lines)
+│   ├── pages/
+│   │   └── home_page.dart                  # Home screen implementation
+│   ├── services/
+│   │   └── ascii_smuggler_service.dart     # Encoding/decoding business logic
+│   └── widgets/
+│       ├── action_buttons.dart             # Encode, Decode, Clear buttons
+│       ├── advanced_options_section.dart   # Encoding/decoding options
+│       ├── debug_section.dart              # Debug output viewer
+│       ├── info_dialog.dart                # About dialog
+│       ├── input_options_section.dart      # Quick insert character buttons
+│       └── statistics_section.dart         # Character statistics display
 ├── test/
-│   └── widget_test.dart               # Widget tests
+│   ├── widget_test.dart                    # Widget tests
+│   ├── encoding_test.dart                  # Encoding/decoding tests
+│   ├── ai_model_test.dart                  # AI compatibility tests
+│   ├── comparison_test.dart                # Python implementation comparison
+│   └── gemini_test.dart                    # Gemini-specific tests
 └── README.md
 ```
+
+### Architecture Benefits
+
+- **Modular Design**: Each widget is self-contained and reusable
+- **Clean Separation**: App initialization, pages, widgets, and services are clearly separated
+- **Easy Maintenance**: Small, focused files are easier to understand and modify
+- **Scalable**: Simple to add new pages or widgets as the app grows
+- **Testable**: Each component can be tested independently
 
 ## Use Cases
 
@@ -197,8 +267,8 @@ encoded = binary.replace('0', ZWSP).replace('1', ZWNJ)
 ```
 
 ## References
-
-- [Original ASCII Smuggler Demo](https://embracethered.com/blog/ascii-smuggler.html)
+- [AWS Security blog](https://aws.amazon.com/blogs/security/defending-llm-applications-against-unicode-character-smuggling/)
+- [Garak ASCII Smuggler](https://reference.garak.ai/en/latest/ascii_smuggling.html)
 - [ASCII Smuggling GitHub Repo](https://github.com/TrustAI-laboratory/ASCII-Smuggling-Hidden-Prompt-Injection-Demo)
 - [Unicode Tags Specification](https://www.unicode.org/charts/PDF/UE0000.pdf)
 - [Variant Selectors](https://www.unicode.org/reports/tr37/)

@@ -24,7 +24,7 @@ class _AsciiSmugglerHomePageState extends State<AsciiSmugglerHomePage> {
   // Encoding options
   EncodingMode _encodingMode = EncodingMode.unicodeTags;
   bool _addBeginEndTags = false; // Default to false for better AI compatibility
-  int _vs2Offset = 16;
+  final int _vs2Offset = 16;
   final String _zeroChar = '\u200B'; // ZWSP
   final String _oneChar = '\u200C'; // ZWNJ
 
@@ -32,7 +32,7 @@ class _AsciiSmugglerHomePageState extends State<AsciiSmugglerHomePage> {
   bool _decodeURL = false;
   bool _highlightMode = false;
   bool _autoDecodeEnabled = false;
-  bool _showDebugEnabled = false;
+  bool _showDebugEnabled = true;
 
   // Detection options
   bool _detectUnicodeTags = true;
