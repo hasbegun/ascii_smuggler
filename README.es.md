@@ -13,7 +13,6 @@ Una aplicación Flutter que convierte texto a codificaciones Unicode invisibles 
 1. **Etiquetas Unicode**
    - Convierte caracteres a caracteres de etiqueta invisibles en el bloque Unicode U+E0000
    - Opción para agregar marcadores de etiqueta BEGIN/END
-   - Basado en la implementación original de Python
 
 2. **Selectores de Variantes**
    - Agrega caracteres de selector de variante (U+FE00 - U+FE0F) después de cada carácter

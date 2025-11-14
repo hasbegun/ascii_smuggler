@@ -13,7 +13,6 @@ A Flutter application that converts text to invisible Unicode encodings and deco
 1. **Unicode Tags**
    - Converts characters to invisible tag characters in the U+E0000 Unicode block
    - Option to add BEGIN/END tag markers
-   - Based on the original Python implementation
 
 2. **Variant Selectors**
    - Adds variant selector characters (U+FE00 - U+FE0F) after each character
