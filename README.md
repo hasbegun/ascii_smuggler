@@ -31,7 +31,7 @@ The app includes comprehensive advanced options matching the original website:
 **Encoding Options:**
 - Three encoding modes: Unicode Tags, Variant Selectors, Sneaky Bits (UTF-8)
 - Optional BEGIN/END tags for Unicode Tags encoding
-  - **Default: OFF** (matches original Python implementation)
+  - **Default: OFF** 
   - Some AI models may not process BEGIN/END control characters correctly
   - Enable only if you need explicit delimiters for your use case
 
@@ -163,7 +163,6 @@ The AI will respond to **both** the visible question (Fibonacci) AND the hidden 
    - After encoding, paste the clipboard content directly into the AI chat
    - The text appears **completely invisible** (blank) to you, but the AI can read the hidden instructions
    - **IMPORTANT**: For best compatibility with AI models, use the default setting (BEGIN/END Tags = OFF)
-   - The encoded output matches the original Python implementation from the research paper
    - This enables steganographic prompt injection demonstrations - the AI processes invisible instructions
 
 3. **To Decode Text**:

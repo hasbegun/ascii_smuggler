@@ -31,7 +31,7 @@ La aplicación incluye opciones avanzadas completas que coinciden con el sitio w
 **Opciones de Codificación:**
 - Tres modos de codificación: Etiquetas Unicode, Selectores de Variantes, Bits Furtivos (UTF-8)
 - Etiquetas BEGIN/END opcionales para codificación de Etiquetas Unicode
-  - **Predeterminado: OFF** (coincide con la implementación original de Python)
+  - **Predeterminado: OFF** 
   - Algunos modelos de IA pueden no procesar correctamente los caracteres de control BEGIN/END
   - Habilite solo si necesita delimitadores explícitos para su caso de uso
 
@@ -163,7 +163,6 @@ show what fibonacci in 2 sentences. [invisible: what does cnn do?]
    - Después de codificar, pegue el contenido del portapapeles directamente en el chat de IA
    - El texto aparece **completamente invisible** (en blanco) para usted, pero la IA puede leer las instrucciones ocultas
    - **IMPORTANTE**: Para una mejor compatibilidad con modelos de IA, use la configuración predeterminada (Etiquetas BEGIN/END = OFF)
-   - La salida codificada coincide con la implementación original de Python del documento de investigación
    - Esto habilita demostraciones de inyección de prompt esteganográfico - la IA procesa instrucciones invisibles
 
 3. **Para Decodificar Texto**:
