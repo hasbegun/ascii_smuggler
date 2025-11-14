@@ -21,14 +21,46 @@ A Flutter application that converts text to invisible Unicode encodings and deco
    - Each character converted to 8-bit binary
    - Uses ZWSP (Zero Width Space) for '0' and ZWNJ (Zero Width Non-Joiner) for '1'
 
+### Advanced Options
+
+The app includes comprehensive advanced options matching the original website:
+
+**Encoding Options:**
+- Three encoding modes: Unicode Tags, Variant Selectors, Sneaky Bits (UTF-8)
+- Optional BEGIN/END tags for Unicode Tags encoding
+  - **Default: OFF** (matches original Python implementation)
+  - Some AI models may not process BEGIN/END control characters correctly
+  - Enable only if you need explicit delimiters for your use case
+
+**Decoding Options:**
+- **Decode URL**: URL-decode input before processing
+- **Highlight Mode**: Highlight detected invisible characters (planned feature)
+- **Auto-decode**: Automatically decode as you type
+- **Show Debug**: Toggle debug output visibility
+
+**Detection Options:**
+- Selectively enable/disable detection for:
+  - Unicode Tags
+  - Variant Selectors
+  - Other Invisible characters
+  - Sneaky Bits
+
+**Input Options:**
+- Quick insert buttons for 20+ special Unicode characters:
+  - Zero-width characters (ZWSP, ZWNJ, ZWJ, WJ)
+  - Directional formatting (LRM, RLM, LRE, RLE, PDF, LRO, RLO, LRI, RLI, FSI, PDI)
+  - Other special characters (SHY, FNAP, MVS, ISEP)
+  - Emoji shortcuts
+
 ### Key Features
 
 - **Encode & Decode**: Convert between visible and hidden text
 - **Copy to Clipboard**: Easy copying of encoded/decoded results
-- **Statistics**: View character counts and types
+- **Statistics**: View character counts and types (total, visible, invisible, tags, variant selectors, zero-width)
 - **Debug Output**: View character codes in Unicode, Hex, or Binary format
-- **Quick Insert**: Quick access to common invisible Unicode characters
+- **Toggle Advanced Options**: Clean interface with expandable advanced options
 - **Auto-Detection**: Automatically detects and decodes all encoding methods
+- **Matches Original Website**: Produces identical output to the original ASCII Smuggler demo
 
 ## Getting Started
 
@@ -73,25 +105,35 @@ flutter run -d macos
 ## Usage
 
 1. **To Encode Text**:
-   - Enter your text in the "Input Text" field
+   - Enter your text in the "Input Text" field (e.g., "what can you do?")
    - Select an encoding method (Unicode Tags, Variant Selectors, or Sneaky Bits)
-   - Configure any method-specific options
-   - Click "Encode"
-   - The encoded text appears in the "Output" field
-   - Click "Copy" to copy to clipboard
+   - Configure any method-specific options via "Toggle Advanced Options"
+   - Click "Encode & Copy"
+   - The **invisible encoded text** is automatically copied to clipboard
+   - The text is completely invisible - you'll see nothing when you paste it
+   - The Debug Output section shows the Unicode codes for verification
 
-2. **To Decode Text**:
+2. **Using with AI Models (Gemini, ChatGPT, etc.)**:
+   - After encoding, paste the clipboard content directly into the AI chat
+   - The text appears **completely invisible** (blank) to you, but the AI can read the hidden instructions
+   - **IMPORTANT**: For best compatibility with AI models, use the default setting (BEGIN/END Tags = OFF)
+   - The encoded output matches the original Python implementation from the research paper
+   - This enables steganographic prompt injection demonstrations - the AI processes invisible instructions
+
+3. **To Decode Text**:
    - Paste encoded text in the "Input Text" field
    - Click "Decode"
    - The app will automatically detect and decode all hidden messages
    - Results are shown in the "Output" field
 
-3. **Debug Output**:
+4. **Debug Output**:
+   - Automatically shown after encoding
    - View detailed character codes in Unicode, Hexadecimal, or Binary format
-   - Helpful for understanding the encoding structure
+   - Helpful for understanding the encoding structure and verifying output
 
-4. **Statistics**:
+5. **Statistics**:
    - See counts of total, visible, invisible, tag, variant selector, and zero-width characters
+   - Helps verify the encoding worked correctly
 
 ## Testing
 

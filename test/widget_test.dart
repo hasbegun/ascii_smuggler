@@ -19,7 +19,7 @@ void main() {
 
     // Verify that key UI elements are present.
     expect(find.text('Input Text'), findsOneWidget);
-    expect(find.text('Encode'), findsOneWidget);
+    expect(find.text('Encode & Copy'), findsOneWidget);
     expect(find.text('Decode'), findsOneWidget);
   });
 }

@@ -53,13 +53,26 @@ class _AsciiSmugglerHomePageState extends State<AsciiSmugglerHomePage> {
 
   // Encoding options
   EncodingMode _encodingMode = EncodingMode.unicodeTags;
-  bool _addBeginEndTags = true;
+  bool _addBeginEndTags = false; // Default to false for better AI compatibility
   int _vs2Offset = 16;
   final String _zeroChar = '\u200B'; // ZWSP
   final String _oneChar = '\u200C'; // ZWNJ
 
+  // Decoding options
+  bool _decodeURL = false;
+  bool _highlightMode = false;
+  bool _autoDecodeEnabled = false;
+  bool _showDebugEnabled = false;
+
+  // Detection options
+  bool _detectUnicodeTags = true;
+  bool _detectVariantSelectors = true;
+  bool _detectOtherInvisible = true;
+  bool _detectSneakyBits = true;
+
   // Debug options
   String _debugFormat = 'unicode';
+  bool _showAdvancedOptions = false;
 
   // Status message
   String _statusMessage = '';
@@ -109,8 +122,16 @@ class _AsciiSmugglerHomePageState extends State<AsciiSmugglerHomePage> {
       _outputController.text = encoded;
       _updateDebugOutput(encoded);
       _updateStatistics(encoded);
-      _setStatus('Text encoded successfully');
+      // Automatically show debug output when encoding
+      if (!_showDebugEnabled) {
+        _showDebugEnabled = true;
+      }
     });
+
+    // Copy ONLY the invisible encoded text to clipboard
+    // This is the steganographic payload that should be invisible when pasted
+    Clipboard.setData(ClipboardData(text: encoded));
+    _setStatus('Text copied to clipboard!');
   }
 
   void _decode() {
@@ -120,7 +141,34 @@ class _AsciiSmugglerHomePageState extends State<AsciiSmugglerHomePage> {
       return;
     }
 
-    Map<String, String> results = _service.detectAndDecode(input);
+    // URL decode if enabled
+    if (_decodeURL) {
+      input = Uri.decodeComponent(input);
+    }
+
+    // Detect and decode based on enabled detection options
+    Map<String, String> results = {};
+
+    if (_detectUnicodeTags) {
+      String decoded = _service.decodeUnicodeTags(input);
+      if (decoded.isNotEmpty) {
+        results['Unicode Tags'] = decoded;
+      }
+    }
+
+    if (_detectVariantSelectors) {
+      String decoded = _service.decodeVariantSelectors(input);
+      if (decoded != input && decoded.isNotEmpty) {
+        results['Variant Selectors'] = decoded;
+      }
+    }
+
+    if (_detectSneakyBits) {
+      String decoded = _service.decodeSneakyBits(input);
+      if (decoded.isNotEmpty) {
+        results['Sneaky Bits'] = decoded;
+      }
+    }
 
     if (results.isEmpty) {
       _setStatus('No hidden text detected');
@@ -233,16 +281,35 @@ class _AsciiSmugglerHomePageState extends State<AsciiSmugglerHomePage> {
                 border: OutlineInputBorder(),
               ),
               maxLines: 5,
-              onChanged: (_) => setState(() {}),
+              onChanged: (text) {
+                setState(() {});
+                if (_autoDecodeEnabled && text.isNotEmpty) {
+                  _decode();
+                }
+              },
             ),
-            const SizedBox(height: 16),
-
-            // Encoding mode selection
-            _buildEncodingModeSection(),
             const SizedBox(height: 16),
 
             // Action buttons
             _buildActionButtons(),
+            const SizedBox(height: 16),
+
+            // Toggle Advanced Options
+            Center(
+              child: TextButton(
+                onPressed: () => setState(() => _showAdvancedOptions = !_showAdvancedOptions),
+                child: Text(_showAdvancedOptions ? 'Hide Advanced Options' : 'Toggle Advanced Options'),
+              ),
+            ),
+            const SizedBox(height: 8),
+
+            // Advanced options (encoding, decoding, detection)
+            if (_showAdvancedOptions) _buildAdvancedOptionsSection(),
+            if (_showAdvancedOptions) const SizedBox(height: 16),
+
+            // Input Options (Quick insert characters)
+            if (_showAdvancedOptions) _buildInputOptionsSection(),
+            if (_showAdvancedOptions) const SizedBox(height: 16),
             const SizedBox(height: 16),
 
             // Status message
@@ -263,16 +330,46 @@ class _AsciiSmugglerHomePageState extends State<AsciiSmugglerHomePage> {
               ),
             if (_statusMessage.isNotEmpty) const SizedBox(height: 16),
 
-            // Output area
-            TextField(
-              controller: _outputController,
-              decoration: const InputDecoration(
-                labelText: 'Output',
-                border: OutlineInputBorder(),
-              ),
-              maxLines: 5,
-              readOnly: true,
-              style: const TextStyle(fontFamily: 'monospace'),
+            // Output area with visual indicator for invisible characters
+            Stack(
+              children: [
+                TextField(
+                  controller: _outputController,
+                  decoration: InputDecoration(
+                    labelText: 'Output',
+                    border: const OutlineInputBorder(),
+                    helperText: _outputController.text.isNotEmpty && _statistics['invisible'] != null && _statistics['invisible']! > 0
+                        ? 'Contains ${_statistics['invisible']} invisible characters - Click Copy to use'
+                        : null,
+                    helperMaxLines: 2,
+                    filled: _outputController.text.isNotEmpty,
+                    fillColor: _outputController.text.isNotEmpty
+                        ? Theme.of(context).colorScheme.surfaceContainerHighest.withOpacity(0.3)
+                        : null,
+                  ),
+                  maxLines: 5,
+                  readOnly: true,
+                  style: const TextStyle(fontFamily: 'monospace'),
+                ),
+                // Show visual placeholder when output contains only invisible characters
+                if (_outputController.text.isNotEmpty &&
+                    _statistics['visible'] != null &&
+                    _statistics['visible'] == 0 &&
+                    _statistics['invisible'] != null &&
+                    _statistics['invisible']! > 0)
+                  Positioned(
+                    left: 12,
+                    top: 12,
+                    child: Text(
+                      '[${_statistics['invisible']} invisible characters - see Debug Output below]',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                        fontStyle: FontStyle.italic,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+              ],
             ),
             const SizedBox(height: 16),
 
@@ -280,99 +377,123 @@ class _AsciiSmugglerHomePageState extends State<AsciiSmugglerHomePage> {
             if (_statistics.isNotEmpty) _buildStatisticsSection(),
             if (_statistics.isNotEmpty) const SizedBox(height: 16),
 
-            // Debug output
-            _buildDebugSection(),
-            const SizedBox(height: 16),
-
-            // Quick insert characters
-            _buildQuickInsertSection(),
+            // Debug output (only show if enabled)
+            if (_showDebugEnabled) _buildDebugSection(),
+            if (_showDebugEnabled) const SizedBox(height: 16),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildEncodingModeSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Encoding Strategy',
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            ListTile(
-              title: const Text('Unicode Tags'),
-              subtitle: const Text('Use invisible tag characters (U+E0000)'),
-              leading: Radio<EncodingMode>(
-                value: EncodingMode.unicodeTags,
-                groupValue: _encodingMode,
-                onChanged: (value) => setState(() => _encodingMode = value!),
-              ),
-              onTap: () => setState(() => _encodingMode = EncodingMode.unicodeTags),
-            ),
-            if (_encodingMode == EncodingMode.unicodeTags)
-              Padding(
-                padding: const EdgeInsets.only(left: 32.0),
-                child: CheckboxListTile(
-                  title: const Text('Add BEGIN/END Tags'),
-                  value: _addBeginEndTags,
-                  onChanged: (value) => setState(() => _addBeginEndTags = value!),
-                  dense: true,
-                ),
-              ),
-            ListTile(
-              title: const Text('Variant Selectors'),
-              subtitle: const Text('Use variant selector characters'),
-              leading: Radio<EncodingMode>(
-                value: EncodingMode.variantSelectors,
-                groupValue: _encodingMode,
-                onChanged: (value) => setState(() => _encodingMode = value!),
-              ),
-              onTap: () => setState(() => _encodingMode = EncodingMode.variantSelectors),
-            ),
-            if (_encodingMode == EncodingMode.variantSelectors)
-              Padding(
-                padding: const EdgeInsets.only(left: 32.0),
-                child: Row(
-                  children: [
-                    const Text('VS2 Offset: '),
-                    SizedBox(
-                      width: 100,
-                      child: TextField(
-                        decoration: const InputDecoration(
-                          hintText: '16',
-                          isDense: true,
-                        ),
-                        keyboardType: TextInputType.number,
-                        onChanged: (value) {
-                          int? offset = int.tryParse(value);
-                          if (offset != null && offset >= 0 && offset <= 15) {
-                            setState(() => _vs2Offset = offset);
-                          }
-                        },
-                        controller: TextEditingController(text: _vs2Offset.toString()),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ListTile(
-              title: const Text('Sneaky Bits (UTF-8)'),
-              subtitle: const Text('Binary encoding with invisible chars'),
-              leading: Radio<EncodingMode>(
-                value: EncodingMode.sneakyBits,
-                groupValue: _encodingMode,
-                onChanged: (value) => setState(() => _encodingMode = value!),
-              ),
-              onTap: () => setState(() => _encodingMode = EncodingMode.sneakyBits),
-            ),
-          ],
-        ),
+  Widget _buildAdvancedOptionsSection() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.cyan,
+        borderRadius: BorderRadius.circular(8),
       ),
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Encoding Options
+          Center(
+            child: Text(
+              'Encoding Options',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildRadioOption('Unicode Tags', EncodingMode.unicodeTags),
+              const SizedBox(width: 16),
+              _buildRadioOption('Variant Selectors', EncodingMode.variantSelectors),
+              const SizedBox(width: 16),
+              _buildRadioOption('Sneaky Bits (UTF-8)', EncodingMode.sneakyBits),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Center(
+            child: CheckboxListTile(
+              title: const Text('Add BEGIN/END Tags', style: TextStyle(color: Colors.black)),
+              value: _addBeginEndTags,
+              onChanged: (value) => setState(() => _addBeginEndTags = value!),
+              dense: true,
+              controlAffinity: ListTileControlAffinity.leading,
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Decoding Options
+          Center(
+            child: Text(
+              'Decoding Options',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              _buildCheckboxOption('Decode URL', _decodeURL, (value) => setState(() => _decodeURL = value!)),
+              _buildCheckboxOption('Highlight Mode', _highlightMode, (value) => setState(() => _highlightMode = value!)),
+              _buildCheckboxOption('Auto-decode', _autoDecodeEnabled, (value) => setState(() => _autoDecodeEnabled = value!)),
+              _buildCheckboxOption('Show Debug', _showDebugEnabled, (value) => setState(() => _showDebugEnabled = value!)),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              _buildCheckboxOption('Unicode Tags', _detectUnicodeTags, (value) => setState(() => _detectUnicodeTags = value!)),
+              _buildCheckboxOption('Variant Selectors', _detectVariantSelectors, (value) => setState(() => _detectVariantSelectors = value!)),
+              _buildCheckboxOption('Other Invisible', _detectOtherInvisible, (value) => setState(() => _detectOtherInvisible = value!)),
+              _buildCheckboxOption('Sneaky Bits', _detectSneakyBits, (value) => setState(() => _detectSneakyBits = value!)),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRadioOption(String label, EncodingMode mode) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Radio<EncodingMode>(
+          value: mode,
+          groupValue: _encodingMode,
+          onChanged: (value) => setState(() => _encodingMode = value!),
+          fillColor: WidgetStateProperty.all(Colors.pink),
+        ),
+        Text(label, style: const TextStyle(color: Colors.black)),
+      ],
+    );
+  }
+
+  Widget _buildCheckboxOption(String label, bool value, void Function(bool?) onChanged) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Checkbox(
+          value: value,
+          onChanged: onChanged,
+          fillColor: WidgetStateProperty.all(Colors.green),
+        ),
+        Text(label, style: const TextStyle(color: Colors.black)),
+      ],
     );
   }
 
@@ -383,7 +504,7 @@ class _AsciiSmugglerHomePageState extends State<AsciiSmugglerHomePage> {
           child: ElevatedButton.icon(
             onPressed: _encode,
             icon: const Icon(Icons.lock),
-            label: const Text('Encode'),
+            label: const Text('Encode & Copy'),
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.all(16),
             ),
@@ -510,42 +631,83 @@ class _AsciiSmugglerHomePageState extends State<AsciiSmugglerHomePage> {
     );
   }
 
-  Widget _buildQuickInsertSection() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Quick Insert Characters',
-              style: Theme.of(context).textTheme.titleMedium,
+  Widget _buildInputOptionsSection() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.cyan,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Text(
+              'Input Options',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
             ),
-            const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                _buildQuickInsertButton('ZWSP', '\u200B', 'Zero Width Space'),
-                _buildQuickInsertButton('ZWNJ', '\u200C', 'Zero Width Non-Joiner'),
-                _buildQuickInsertButton('ZWJ', '\u200D', 'Zero Width Joiner'),
-                _buildQuickInsertButton('VS1', '\uFE00', 'Variant Selector 1'),
-                _buildQuickInsertButton('VS2', '\uFE01', 'Variant Selector 2'),
-              ],
+          ),
+          const SizedBox(height: 8),
+          Center(
+            child: Text(
+              'Click a button to copy the character to clipboard.',
+              style: TextStyle(color: Colors.black87, fontSize: 12),
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 12),
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 4,
+            runSpacing: 4,
+            children: [
+              _buildQuickInsertButton('ZWSP', '\u200B'),
+              _buildQuickInsertButton('ZWNJ', '\u200C'),
+              _buildQuickInsertButton('ZWJ', '\u200D'),
+              _buildQuickInsertButton('WJ', '\u2060'), // Word Joiner
+              _buildQuickInsertButton('×', '\u00D7'), // Multiplication sign
+              _buildQuickInsertButton('+', '\u002B'), // Plus sign
+              _buildQuickInsertButton('ISEP', '\u001F'), // Information Separator
+              _buildQuickInsertButton('LRM', '\u200E'), // Left-to-Right Mark
+              _buildQuickInsertButton('RLM', '\u200F'), // Right-to-Left Mark
+              _buildQuickInsertButton('LRE', '\u202A'), // Left-to-Right Embedding
+              _buildQuickInsertButton('RLE', '\u202B'), // Right-to-Left Embedding
+              _buildQuickInsertButton('PDF', '\u202C'), // Pop Directional Formatting
+              _buildQuickInsertButton('LRO', '\u202D'), // Left-to-Right Override
+              _buildQuickInsertButton('RLO', '\u202E'), // Right-to-Left Override
+              _buildQuickInsertButton('LRI', '\u2066'), // Left-to-Right Isolate
+              _buildQuickInsertButton('RLI', '\u2067'), // Right-to-Left Isolate
+              _buildQuickInsertButton('FSI', '\u2068'), // First Strong Isolate
+              _buildQuickInsertButton('PDI', '\u2069'), // Pop Directional Isolate
+              _buildQuickInsertButton('SHY', '\u00AD'), // Soft Hyphen
+              _buildQuickInsertButton('FNAP', '\u180E'), // Mongolian Vowel Separator
+              _buildQuickInsertButton('MVS', '\u180E'), // Mongolian Vowel Separator (duplicate)
+              _buildQuickInsertButton('😊', '😊'), // Emoji
+              _buildQuickInsertButton('🎉', '🎉'), // Emoji
+              _buildQuickInsertButton('👍', '👍'), // Emoji
+              _buildQuickInsertButton('⚠️', '⚠️'), // Emoji
+            ],
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildQuickInsertButton(String label, String char, String tooltip) {
+  Widget _buildQuickInsertButton(String label, String char) {
     return ElevatedButton(
       onPressed: () {
         Clipboard.setData(ClipboardData(text: char));
         _setStatus('Copied $label to clipboard');
       },
-      child: Text(label),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        minimumSize: const Size(50, 36),
+      ),
+      child: Text(label, style: const TextStyle(fontSize: 12)),
     );
   }
 
