@@ -81,15 +81,19 @@ class AdvancedOptionsSection extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildRadioOption(l10n.unicodeTags, EncodingMode.unicodeTags),
-              const SizedBox(width: 16),
-              _buildRadioOption(l10n.variantSelectors, EncodingMode.variantSelectors),
-              const SizedBox(width: 16),
-              _buildRadioOption(l10n.sneakyBitsUtf8, EncodingMode.sneakyBits),
-            ],
+          RadioGroup<EncodingMode>(
+            groupValue: encodingMode,
+            onChanged: (value) => onEncodingModeChanged(value!),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildRadioOption(l10n.unicodeTags, EncodingMode.unicodeTags),
+                const SizedBox(width: 16),
+                _buildRadioOption(l10n.variantSelectors, EncodingMode.variantSelectors),
+                const SizedBox(width: 16),
+                _buildRadioOption(l10n.sneakyBitsUtf8, EncodingMode.sneakyBits),
+              ],
+            ),
           ),
           const SizedBox(height: 8),
           Center(
@@ -148,8 +152,6 @@ class AdvancedOptionsSection extends StatelessWidget {
       children: [
         Radio<EncodingMode>(
           value: mode,
-          groupValue: encodingMode,
-          onChanged: (value) => onEncodingModeChanged(value!),
           fillColor: WidgetStateProperty.all(Colors.white60),
         ),
         Text(label, style: const TextStyle(color: Colors.white60)),
